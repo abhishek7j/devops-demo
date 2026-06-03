@@ -21,9 +21,22 @@ pipeline {
             }
         }
 
-        stage('List Images') {
+        stage('Deploy Container') {
             steps {
-                sh 'docker images'
+                sh '''
+                docker rm -f devops-demo || true
+
+                docker run -d \
+                  --name devops-demo \
+                  -p 9095:80 \
+                  devops-demo:v1
+                '''
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh 'docker ps'
             }
         }
     }
